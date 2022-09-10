@@ -1,4 +1,5 @@
 class GameBoard
+
   WIN_COMBINATIONS = [
     [0,1,2],
     [3,4,5],
@@ -49,10 +50,11 @@ class Player
   def selectMarker(marker)
     @marker = marker
   end
-
+  
   def won?(board)
     board.winStatus(@marker)
   end
+  
 end
 
 
@@ -90,6 +92,8 @@ class Game
     end
     playAgain
   end
+
+  private
 
   def createPlayers(name1, name2)
     @p1 = Player.new(name1)
