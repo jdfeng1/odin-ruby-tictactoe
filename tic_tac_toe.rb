@@ -54,7 +54,7 @@ class Player
   def won?(board)
     board.winStatus(@marker)
   end
-  
+
 end
 
 
@@ -71,7 +71,7 @@ class Game
 
   def startGame
     puts "Let's play tic tac toe!"
-    if @playersSet == false
+    if !@playersSet
       puts "Player 1, what is your name?"
       @name = gets.chomp
       puts "Player 2, what is your name?"
@@ -163,12 +163,12 @@ class Game
       end
       startGame
     else
+      puts "\nGoodbye!\n"
       @continue = false
     end
   end
 
 end
-
 
 newGame = Game.new
 newGame.startGame
