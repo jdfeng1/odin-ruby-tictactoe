@@ -17,11 +17,13 @@ class GameBoard
   end
 
   def displayBoard(array = @board)
+    puts ""
     puts " #{array[0]} | #{array[1]} | #{array[2]} "
     puts "---+---+---"
     puts " #{array[3]} | #{array[4]} | #{array[5]} "
     puts "---+---+---"
     puts " #{array[6]} | #{array[7]} | #{array[8]} "
+    puts ""
   end
 
   def winStatus(marker)
@@ -46,14 +48,8 @@ class Player
     @score = 0
   end
 
-  def selectMarker
-    puts "#{@name}, X or O?"
-    choice = loop do
-      currentChoice = gets.chomp.upcase
-      break currentChoice if['X','O'].include? currentChoice
-      puts "Please choose X or O"
-    end
-    @marker = choice
+  def selectMarker(marker)
+    @marker = marker
   end
 
   def scoreChange
@@ -65,4 +61,53 @@ end
 
 class Game
 
+  attr_accessor :p1
+  attr_accessor :p2
+
+  def initialize
+    @board = GameBoard.new
+  end
+
+  def startGame
+    puts "Let's play tic tac toe!"
+    puts "Player 1, what is your name?"
+    @name = gets.chomp
+    puts "Player 2, what is your name?"
+    @name2 = loop do
+      currentChoice = gets.chomp
+      break currentChoice if currentChoice != @name
+      puts "Please choose a different name from #{@name}"
+    end
+    createPlayers(@name, @name2)
+    gameLoop
+  end
+
+  def createPlayers(name1, name2)
+    @p1 = Player.new(name1)
+    @p2 = Player.new(name2)
+    puts "Player 1 is #{@p1.name} - choose X or O?"
+    choice = loop do
+      currentChoice = gets.chomp.upcase
+      break currentChoice if['X','O'].include? currentChoice
+      puts "Please choose X or O"
+    end
+    @p1.selectMarker(choice)
+    puts "\n#{@p1.name} selects #{@p1.marker}"
+    if (@p1.marker == "X")
+      @p2.selectMarker("O")
+    else
+      @p2.selectMarker("X")
+    end
+    puts "\n#{@p2.name} will be #{@p2.marker}"
+  end
+
+  def gameLoop
+    @board.displayBoard
+    while 
+  end
+
 end
+
+
+newGame = Game.new
+newGame.startGame
