@@ -46,33 +46,23 @@ class Player
     @score = 0
   end
 
-  def selectMarker(marker)
+  def selectMarker
     puts "#{@name}, X or O?"
-    while @marker == ""
-      if ["x","X","o","O"].include? gets.chomp
-        @marker = marker
-      else
-        puts "Invalid - please choose X or O"
-      end
+    choice = loop do
+      currentChoice = gets.chomp.upcase
+      break currentChoice if['X','O'].include? currentChoice
+      puts "Please choose X or O"
     end
+    @marker = choice
   end
 
   def scoreChange
     @score += 1
   end
 
-  
 end
 
 
 class Game
 
 end
-
-newBoard = GameBoard.new
-puts newBoard.displayBoard
-newBoard.board = ["1","2","3","4","5","6","7","8","9"]
-puts newBoard.winStatus("X")
-newBoard.placeMarker(5, "X")
-puts newBoard.displayBoard
-
