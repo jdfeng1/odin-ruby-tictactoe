@@ -10,13 +10,13 @@ class GameBoard
     [2,4,6]
   ]
 
-  attr_accessor :board
+  attr_accessor :content
 
   def initialize
-    @board = ["1","2","3","4","5","6","7","8","9"]
+    @content = ["1","2","3","4","5","6","7","8","9"]
   end
 
-  def displayBoard(array = @board)
+  def displayBoard(array = @content)
     puts ""
     puts " #{array[0]} | #{array[1]} | #{array[2]} "
     puts "---+---+---"
@@ -27,12 +27,12 @@ class GameBoard
   end
 
   def winStatus(marker)
-    arr = @board.each_index.select {|i| board[i] == marker}
+    arr = @content.each_index.select {|i| content[i] == marker}
     WIN_COMBINATIONS.any? {|combination| (arr & combination) == combination}
   end
 
   def placeMarker(position, marker)
-    @board[position - 1] = marker
+    @content[position.to_i - 1] = marker
   end
 
 end
@@ -40,22 +40,19 @@ end
 class Player
   attr_accessor :name
   attr_accessor :marker
-  attr_accessor :score
 
   def initialize(name)
     @name = name
     @marker = ""
-    @score = 0
   end
 
   def selectMarker(marker)
     @marker = marker
   end
 
-  def scoreChange
-    @score += 1
+  def won?(board)
+    board.winStatus(@marker)
   end
-
 end
 
 
@@ -66,6 +63,7 @@ class Game
 
   def initialize
     @board = GameBoard.new
+    @continue = true
   end
 
   def startGame
@@ -79,7 +77,15 @@ class Game
       puts "Please choose a different name from #{@name}"
     end
     createPlayers(@name, @name2)
-    gameLoop
+    while @continue
+      turn(@p1)
+      if !@continue 
+        break
+      else
+        turn(@p2)
+      end
+    end
+    playAgain
   end
 
   def createPlayers(name1, name2)
@@ -101,9 +107,46 @@ class Game
     puts "\n#{@p2.name} will be #{@p2.marker}"
   end
 
-  def gameLoop
+  def turn(player)
     @board.displayBoard
-    while 
+    puts "#{player.name}, choose which position you would like to play"
+    choice = loop do
+      move = gets.chomp
+      break move if (move.to_i.to_s == move && @board.content.include?(move))
+      puts "Please choose a valid position"
+    end
+    @board.placeMarker(choice, player.marker)
+    gameOver?(player)
+  end
+
+  def gameOver?(player)
+    if (player.won?(@board))
+      @continue = false
+      @board.displayBoard
+      puts "\n#{player.name} won!"
+    elsif (@board.content - ["X","O"]).empty?
+      @continue = false
+      @board.displayBoard
+      puts "\nNo winners this time :("
+    else
+      @continue
+    end
+  end
+
+  def playAgain
+    puts "Play again? [Y/N]"
+    choice = loop do
+      currentChoice = gets.chomp.upcase
+      break currentChoice if['Y','N'].include? currentChoice
+      puts "Please choose [Y]es or [N]o"
+    end
+    if choice == "Y"
+      @continue = true
+      @board.content = ["1","2","3","4","5","6","7","8","9"]
+      startGame
+    else
+      @continue = false
+    end
   end
 
 end
