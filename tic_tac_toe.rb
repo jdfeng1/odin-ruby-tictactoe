@@ -64,19 +64,22 @@ class Game
   def initialize
     @board = GameBoard.new
     @continue = true
+    @playersSet = false
   end
 
   def startGame
     puts "Let's play tic tac toe!"
-    puts "Player 1, what is your name?"
-    @name = gets.chomp
-    puts "Player 2, what is your name?"
-    @name2 = loop do
-      currentChoice = gets.chomp
-      break currentChoice if currentChoice != @name
-      puts "Please choose a different name from #{@name}"
+    if @playersSet == false
+      puts "Player 1, what is your name?"
+      @name = gets.chomp
+      puts "Player 2, what is your name?"
+      @name2 = loop do
+        currentChoice = gets.chomp
+        break currentChoice if currentChoice != @name
+        puts "Please choose a different name from #{@name}"
+      end
+      createPlayers(@name, @name2)
     end
-    createPlayers(@name, @name2)
     while @continue
       turn(@p1)
       if !@continue 
@@ -143,6 +146,17 @@ class Game
     if choice == "Y"
       @continue = true
       @board.content = ["1","2","3","4","5","6","7","8","9"]
+      puts "Change players? [Y/N]"
+      choice = loop do
+        currentChoice = gets.chomp.upcase
+        break currentChoice if['Y','N'].include? currentChoice
+        puts "Please choose [Y]es or [N]o"
+      end
+      if choice == "N"
+        @playersSet = true
+      else
+        @playersSet = false
+      end
       startGame
     else
       @continue = false
